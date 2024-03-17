@@ -1,39 +1,53 @@
 const cssPromises = {};
 
 function loadResource(src) {
-  // JavaScript module
-  if (src.endsWith('.js')) {
-    return import(src);
-  }
-  // CSS file
-  if (src.endsWith('.css')) {
 
-    if (!cssPromises[src]) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = src;
-      document.head.append(link);
-      cssPromises[src] = new Promise(resolve => {
-        link.addEventListener('load', () => resolve());
+  if (src.endsWith('.js')) {                                         // JavaScript module
+    return import(src);                                              // 
+  }
+
+  if (src.endsWith('.css')) {                                        // CSS file
+
+    if (!cssPromises[src]) {                                         // если промиса нет
+      const link = document.createElement('link');                   // создаю ссылку
+      link.rel = 'stylesheet';                                       // 
+      link.href = src;                                               // 
+      document.head.append(link);                                    // добавляю в DOM
+      cssPromises[src] = new Promise(resolve => {                    // заресолвить после события
+        link.addEventListener('load', () => resolve());              // загрузки
       })
     }
-    return cssPromises[src];
+    return cssPromises[src];                                         // везвращаю промис
   }
-  // данные с сервера
-  return fetch(src).then(res => res.json());
+
+  return fetch(src).then(res => res.json());                         // данные с сервера
 }
 
-const appContainer = document.querySelector('#app');
+const appContainer = document.querySelector('#app');                 // определяю переменную для APP
 
-Promise.all([
-  './film-list.js',
-  'https://swapi.dev/api/films',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css',
-].map(src => loadResource(src))).then(([pageModule, data]) => {
-  // pageModule.render(data)
-  appContainer.append(pageModule.render(data))
-})
+const paramsString = location.search.replace('/', '=');
+const searchParams = new URLSearchParams(paramsString);
 
-// https://swapi.dev/api/films - init link
+let filmPath
+for (const param of searchParams) filmPath = param.join('/')
 
+function renderPage(moduleName, apiUrl, css) {
+  Promise.all([moduleName, apiUrl, css,].map(src => loadResource(src)))
+    .then(([pageModule, data]) => {
+      appContainer.append(pageModule.render(data))
+    })
+}
 
+if (filmPath) {
+  renderPage(
+    './film.js',
+    `https://swapi.dev/api/${filmPath}`,
+    'https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css',
+  )
+} else {
+  renderPage(
+    './film-list.js',
+    'https://swapi.dev/api/films',
+    'https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css',
+  )
+}

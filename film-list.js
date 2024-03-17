@@ -1,14 +1,10 @@
 
 export function render(data) {
 
-  console.log(data.results);
-  let asd = data.results
-
-
   let container = document.createElement('div')
-  container.classList.add('container', 'd-flex', 'flex-wrap', 'justify-content-between', 'gap-5', 'pt-5', 'pb-5')
+  container.classList.add('container', 'd-flex', 'flex-wrap', 'justify-content-between', 'gap-5', 'py-5')
 
-  for (const episode of asd) {
+  for (const episode of data.results) {
 
     let episodeCard = document.createElement('div')
     episodeCard.classList.add('card')
@@ -34,8 +30,10 @@ export function render(data) {
     cardText.textContent = episode.opening_crawl
 
     let cardLink = document.createElement('a')
-    cardLink.classList.add('card-link')
+    cardLink.classList.add('btn', 'btn-primary')
     cardLink.textContent = 'more about the film'
+    cardLink.href = `?films/${episode.episode_id}`
+
 
     cardBody.append(cardTitle)
     cardBody.append(episodeNumber)
