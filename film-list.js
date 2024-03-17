@@ -17,6 +17,7 @@ export function render(data) {
     cardTitle.classList.add('card-title', 'mb-3')
     cardTitle.textContent = episode.title
 
+
     let episodeNumber = document.createElement('h6')
     episodeNumber.classList.add('card-subtitle', 'mb-2', 'text-body-secondary')
     episodeNumber.textContent = `Episode: ${episode.episode_id}`
@@ -29,10 +30,12 @@ export function render(data) {
     cardText.classList.add('card-text')
     cardText.textContent = episode.opening_crawl
 
+    let param = episode.url.split('/').filter(e => Number(e))[0]
+
     let cardLink = document.createElement('a')
     cardLink.classList.add('btn', 'btn-primary')
     cardLink.textContent = 'more about the film'
-    cardLink.href = `?films/${episode.episode_id}`
+    cardLink.href = `?films/${param}`
 
 
     cardBody.append(cardTitle)
