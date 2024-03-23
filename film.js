@@ -1,49 +1,59 @@
 
+import { createElem } from "./helpers.js"
 
-export function render(data) {
+export function render(data, planets, species) {
 
-  console.log(data);
-
-  let container = document.createElement('div')
-  container.classList.add('container', 'd-flex', 'flex-wrap', 'justify-content-between', 'gap-5', 'py-5')
-
-  let episodeCard = document.createElement('div')
-  episodeCard.classList.add('card')
+  const container = createElem('div', ['container', 'd-flex', 'flex-wrap', 'justify-content-between', 'gap-5', 'py-5'])
+  const episodeCard = createElem('div', 'card')
   episodeCard.style.width = '100%'
+  const cardBody = createElem('div', ['card-body'])
+  const cardTitle = createElem('h1', ['card-title', 'mb-3'], data.title)
+  const episodeNumber = createElem('h3', ['card-subtitle', 'mb-2', 'text-body-secondary'], `Episode: ${data.episode_id}`)
+  const cardSubtitle = createElem('h4', ['card-subtitle', 'mb-2', 'text-body-secondary'], `Director: ${data.director}`)
+  const cardText = createElem('p', ['card-text'], data.opening_crawl)
 
-  let cardBody = document.createElement('div')
-  cardBody.classList.add('card-body')
+  const propertyWrapper = createElem('div', ['d-flex'])
+  const planetsWrapper = createElem('div', ['p-4', 'mb-3'])
+  planetsWrapper.style.width = '20%'
+  const speciesWrapper = createElem('div', ['p-4', 'mb-3'])
+  speciesWrapper.style.width = '25%'
 
-  let cardTitle = document.createElement('h1')
-  cardTitle.classList.add('card-title', 'mb-3')
-  cardTitle.textContent = data.title
+  const planetsListTitle = createElem('h3', [], 'Planets')
+  const speciesListTitle = createElem('h3', [], 'Species')
 
+  const planetsList = createElem('ul', ['p-0'])
+  const speciesList = createElem('ul', ['p-0'])
 
-  let episodeNumber = document.createElement('h3')
-  episodeNumber.classList.add('card-subtitle', 'mb-2', 'text-body-secondary')
-  episodeNumber.textContent = `Episode: ${data.episode_id}`
+  planets.forEach(e => {
+    const planetItem = createElem('li', ['list-group'], e.name)
+    planetsList.append(planetItem)
+  })
 
-  let cardSubtitle = document.createElement('h4')
-  cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-body-secondary')
-  cardSubtitle.textContent = `Director: ${data.director}`
+  species.forEach(e => {
+    const specialItem = createElem('li', ['list-group'], e.name)
+    speciesList.append(specialItem)
+  })
 
-  let cardText = document.createElement('p')
-  cardText.classList.add('card-text')
-  cardText.textContent = data.opening_crawl
-
-  let backLink = document.createElement('a')
-  backLink.classList.add('btn', 'btn-primary')
-  backLink.textContent = 'Back to episodes'
+  const backLink = createElem('a', ['btn', 'btn-primary'], 'Back to episodes')
   backLink.setAttribute('onClick', 'window.history.go(-1); return false')
 
   cardBody.append(cardTitle)
   cardBody.append(episodeNumber)
   cardBody.append(cardSubtitle)
   cardBody.append(cardText)
+
+  cardBody.append(propertyWrapper)
+  propertyWrapper.append(planetsWrapper)
+  planetsWrapper.append(planetsListTitle)
+  planetsWrapper.append(planetsList)
+
+  propertyWrapper.append(speciesWrapper)
+  speciesWrapper.append(speciesListTitle)
+  speciesWrapper.append(speciesList)
+
   cardBody.append(backLink)
 
   episodeCard.append(cardBody)
-
   container.append(episodeCard)
 
   return container
