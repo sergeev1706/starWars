@@ -4,7 +4,6 @@ import { createElem } from "./helpers.js"
 export function render(data) {
 
   const container = createElem('div', ['container', 'd-flex', 'flex-wrap', 'justify-content-between', 'gap-5', 'py-5']);
-
   for (const episode of data.results) {
 
     const episodeCard = createElem('div', ['card']);
